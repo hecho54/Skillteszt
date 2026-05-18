@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="TUTAC — Időtlen minimalizmus. Magyar tervezés. Etikus gyártás.">
+<title>TUTAC — Minimalist Fashion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FAFAF8;
+  --warm: #F5F0E8;
+  --warmer: #EDE5D4;
+  --fg: #0F0F0D;
+  --muted: #8C8C84;
+  --accent: #0F0F0D;
+  --line: rgba(15,15,13,0.1);
+  --beige: #C8B99A;
+  --sand: #D4C5A9;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* GRAIN */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9998;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* SCROLL PROGRESS */
+#progress {
+  position: fixed; top: 0; left: 0;
+  height: 1px; background: var(--fg);
+  transform-origin: left; transform: scaleX(0);
+  z-index: 9999; width: 100%;
+}
+
+/* PRELOADER */
+#preloader {
+  position: fixed; inset: 0;
+  background: var(--fg); z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 1.5rem;
+}
+#preloader-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem; color: var(--bg);
+  font-weight: 700; letter-spacing: 0.15em;
+  opacity: 0;
+}
+#preloader-line {
+  width: 0; height: 1px;
+  background: rgba(250,250,248,0.3);
+  transition: width 0.8s ease;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.4rem 3rem;
+  background: rgba(250,250,248,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.4s;
+}
+nav.scrolled { border-bottom-color: var(--line); }
+
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; font-weight: 700;
+  letter-spacing: 0.1em; text-decoration: none; color: var(--fg);
+}
+
+.nav-links {
+  display: flex; gap: 2.5rem; list-style: none;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.nav-links a {
+  font-size: 0.72rem; letter-spacing: 0.18em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--muted); transition: color 0.2s;
+  position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -3px; left: 0;
+  width: 0; height: 1px; background: var(--fg);
+  transition: width 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.nav-links a:hover { color: var(--fg); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-actions { display: flex; gap: 1.8rem; align-items: center; }
+.nav-actions a {
+  font-size: 0.72rem; letter-spacing: 0.1em;
+  text-transform: uppercase; text-decoration: none; color: var(--fg);
+}
+.nav-cart { position: relative; }
+.nav-cart-count {
+  position: absolute; top: -6px; right: -8px;
+  width: 14px; height: 14px;
+  background: var(--fg); color: var(--bg);
+  border-radius: 50%; font-size: 0.55rem;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+  padding-top: 80px;
+}
+.hero-left {
+  padding: 5rem 3rem 5rem 3rem;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--line);
+}
+.hero-top { display: flex; flex-direction: column; gap: 1.5rem; }
+.hero-season {
+  font-size: 0.62rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--muted);
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.hero-season::before {
+  content: ''; display: block;
+  width: 1.5rem; height: 1px; background: var(--muted);
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.5rem, 6vw, 6.5rem);
+  line-height: 0.9; letter-spacing: -0.02em; font-weight: 400;
+}
+.hero-title em { font-style: italic; color: var(--muted); }
+.hero-desc {
+  font-size: 0.92rem; line-height: 1.8;
+  color: var(--muted); max-width: 34ch;
+}
+.hero-cta-wrap { display: flex; align-items: center; gap: 2rem; }
+.btn-dark {
+  background: var(--fg); color: var(--bg);
+  padding: 0.9em 2.4em; font-size: 0.72rem;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  text-decoration: none; font-family: 'DM Sans', sans-serif;
+  transition: opacity 0.3s; display: inline-block;
+  position: relative; overflow: hidden;
+}
+.btn-dark::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0.08);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+.btn-dark:hover::after { transform: translateX(0); }
+.btn-text {
+  font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
+  text-decoration: none; position: relative;
+}
+.btn-text::after {
+  content: ''; position: absolute; bottom: -2px; left: 0;
+  width: 100%; height: 1px; background: var(--muted);
+  transform: scaleX(0.3); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.btn-text:hover::after { transform: scaleX(1); }
+
+.hero-meta {
+  display: flex; gap: 3rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--line);
+}
+.hero-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem; font-weight: 400; display: block; line-height: 1;
+}
+.hero-stat-label {
+  font-size: 0.62rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--muted);
+  display: block; margin-top: 0.3rem;
+}
+
+.hero-right { position: relative; overflow: hidden; background: var(--warm); }
+.hero-right img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.hero-right:hover img { transform: scale(1.03); }
+.hero-tag {
+  position: absolute; top: 2rem; right: 2rem;
+  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+  background: rgba(250,250,248,0.88); backdrop-filter: blur(4px);
+  padding: 0.45rem 0.9rem; border: 1px solid var(--line);
+}
+.hero-scroll {
+  position: absolute; bottom: 2.5rem; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+}
+.scroll-line {
+  width: 1px; height: 36px;
+  background: linear-gradient(to bottom, var(--muted), transparent);
+  animation: scrollAnim 1.5s ease-in-out infinite;
+}
+@keyframes scrollAnim {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* MARQUEE */
+.marquee-wrap {
+  overflow: hidden; padding: 0.9rem 0;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: var(--warm);
+}
+.marquee-inner {
+  display: flex; white-space: nowrap;
+  animation: marquee 25s linear infinite;
+}
+.marquee-inner span {
+  font-family: 'Playfair Display', serif;
+  font-style: italic; font-size: 0.85rem;
+  color: var(--muted); padding: 0 2rem; letter-spacing: 0.05em;
+}
+.marquee-dot { color: var(--sand) !important; font-style: normal !important; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* SECTION */
+.section { padding: 6rem 3rem; }
+.section-label {
+  font-size: 0.62rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--muted);
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem;
+}
+.section-label::before { content: ''; display: block; width: 1.5rem; height: 1px; background: var(--muted); }
+
+/* CATEGORIES */
+.cat-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line);
+}
+.cat-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 400; line-height: 1.05;
+}
+.cat-title em { font-style: italic; }
+.view-all {
+  font-size: 0.68rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
+  text-decoration: none; border-bottom: 1px solid var(--line);
+  padding-bottom: 0.2rem; transition: color 0.2s, border-color 0.2s;
+}
+.view-all:hover { color: var(--fg); border-color: var(--fg); }
+
+.cat-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.cat-item {
+  background: var(--bg); position: relative; overflow: hidden;
+  aspect-ratio: 3/4; cursor: pointer;
+}
+.cat-item:first-child { aspect-ratio: auto; min-height: 480px; }
+.cat-item img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.cat-item:hover img { transform: scale(1.05); }
+.cat-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+}
+.cat-content {
+  position: absolute; bottom: 1.8rem; left: 1.8rem; z-index: 2;
+}
+.cat-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; font-weight: 400; color: #fff;
+  margin-bottom: 0.2rem;
+}
+.cat-count { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+.cat-arrow {
+  position: absolute; top: 1.5rem; right: 1.5rem; z-index: 2;
+  width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 0.9rem; text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+.cat-item:hover .cat-arrow { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.8); }
+
+/* PRODUCTS */
+.product-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.product-card { background: var(--bg); position: relative; overflow: hidden; }
+.product-img {
+  aspect-ratio: 3/4; overflow: hidden; position: relative; background: var(--warm);
+}
+.product-img img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.product-card:hover .product-img img { transform: scale(1.05); }
+.product-badge {
+  position: absolute; top: 1rem; left: 1rem;
+  font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+  background: var(--fg); color: var(--bg); padding: 0.3rem 0.7rem; z-index: 2;
+}
+.product-badge.sale { background: #8B6914; }
+.product-quick {
+  position: absolute; bottom: 1rem; left: 1rem; right: 1rem;
+  background: rgba(250,250,248,0.92); backdrop-filter: blur(4px);
+  text-align: center; padding: 0.7rem; z-index: 2;
+  font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: pointer; transform: translateY(110%);
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  border: 1px solid var(--line);
+}
+.product-card:hover .product-quick { transform: translateY(0); }
+.product-info {
+  padding: 1.2rem 1.2rem 1.5rem; border-top: 1px solid var(--line);
+}
+.product-name { font-size: 0.88rem; font-weight: 400; margin-bottom: 0.5rem; }
+.product-bottom { display: flex; justify-content: space-between; align-items: center; }
+.product-price { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 400; }
+.product-price .original {
+  font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+  color: var(--muted); text-decoration: line-through; margin-right: 0.3rem;
+}
+.colors { display: flex; gap: 4px; }
+.color-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1.5px solid rgba(15,15,13,0.15); cursor: pointer;
+  transition: transform 0.2s;
+}
+.color-dot:hover { transform: scale(1.3); }
+
+/* GALLERY */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 320px 320px;
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.gallery-item { overflow: hidden; position: relative; }
+.gallery-item.tall { grid-row: span 2; }
+.gallery-item img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+  filter: grayscale(0.15);
+}
+.gallery-item:hover img { transform: scale(1.05); filter: grayscale(0); }
+
+/* STATEMENT */
+.statement {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5rem; align-items: center;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  padding: 7rem 3rem;
+}
+.statement-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 4rem); line-height: 1.05; font-weight: 400;
+}
+.statement-title em { font-style: italic; color: var(--muted); }
+.values { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.value-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.2rem 0; border-bottom: 1px solid var(--line);
+  font-size: 0.88rem;
+}
+.value-item span:last-child { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; }
+
+/* PROCESS */
+.process {
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 6rem; padding: 7rem 3rem;
+  border-bottom: 1px solid var(--line);
+}
+.process-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 400; line-height: 1.1;
+  position: sticky; top: 120px;
+}
+.process-heading em { font-style: italic; }
+.process-steps { display: flex; flex-direction: column; }
+.process-step {
+  display: grid; grid-template-columns: 3rem 1fr;
+  gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--line);
+}
+.step-num {
+  font-family: 'Playfair Display', serif; font-size: 0.85rem;
+  color: var(--muted); font-style: italic; padding-top: 0.15rem;
+}
+.step-title { font-size: 0.95rem; font-weight: 500; letter-spacing: 0.03em; margin-bottom: 0.6rem; }
+.step-text { font-size: 0.85rem; line-height: 1.75; color: var(--muted); }
+
+/* ABOUT */
+.about {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+.about-img { overflow: hidden; min-height: 550px; }
+.about-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.8s ease; }
+.about:hover .about-img img { transform: scale(1.03); }
+.about-text {
+  padding: 5rem 4rem; display: flex; flex-direction: column;
+  justify-content: center; gap: 1.5rem;
+  border-left: 1px solid var(--line);
+}
+.about-label { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+.about-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 400; line-height: 1.05;
+}
+.about-title em { font-style: italic; }
+.about-body { font-size: 0.92rem; line-height: 1.85; color: var(--muted); max-width: 44ch; }
+.about-stats {
+  display: flex; gap: 3rem; padding-top: 2rem; border-top: 1px solid var(--line);
+}
+.stat-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; display: block; line-height: 1; }
+.stat-label { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 0.3rem; display: block; }
+
+/* TESTIMONIALS */
+.testimonials { padding: 6rem 3rem; border-bottom: 1px solid var(--line); }
+.testimonial-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 3rem;
+}
+.testimonial { background: var(--bg); padding: 2.5rem; }
+.testimonial-stars { display: flex; gap: 3px; margin-bottom: 1.5rem; }
+.star { color: var(--beige); font-size: 0.85rem; }
+.testimonial-text {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 1rem; line-height: 1.65; margin-bottom: 2rem; font-weight: 400;
+}
+.testimonial-author { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+/* NEWSLETTER */
+.newsletter {
+  padding: 7rem 3rem; background: var(--warm);
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5rem; align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+.newsletter-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 400; line-height: 1.05;
+}
+.newsletter-title em { font-style: italic; }
+.newsletter-form {
+  display: flex; gap: 0;
+  border-bottom: 1px solid rgba(15,15,13,0.25); padding-bottom: 1rem;
+}
+.newsletter-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+  font-weight: 300; color: var(--fg);
+}
+.newsletter-input::placeholder { color: var(--muted); }
+.newsletter-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 0.68rem;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg);
+  transition: opacity 0.2s;
+}
+.newsletter-btn:hover { opacity: 0.6; }
+.newsletter-note { font-size: 0.72rem; color: var(--muted); margin-top: 1rem; line-height: 1.6; }
+
+/* FOOTER */
+footer { padding: 4rem 3rem 2.5rem; }
+.footer-top {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--line); margin-bottom: 2rem;
+}
+.footer-brand { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 1rem; }
+.footer-desc { font-size: 0.82rem; line-height: 1.7; color: var(--muted); max-width: 28ch; }
+.footer-col-title { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+.footer-links a { font-size: 0.85rem; color: var(--fg); text-decoration: none; transition: opacity 0.2s; }
+.footer-links a:hover { opacity: 0.5; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+.footer-copy { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-legal { display: flex; gap: 2rem; list-style: none; }
+.footer-legal a { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-legal a:hover { color: var(--fg); }
+.footer-big {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(4rem, 10vw, 9rem); font-weight: 700;
+  letter-spacing: 0.05em; color: var(--line); line-height: 1;
+  padding: 2rem 0 0; border-top: 1px solid var(--line); margin-top: 2rem;
+  overflow: hidden; user-select: none;
+}
+
+/* REVEAL */
+.reveal {
+  opacity: 0; transform: translateY(35px);
+  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { min-height: 55vh; }
+  .cat-grid { grid-template-columns: 1fr 1fr; }
+  .product-grid { grid-template-columns: 1fr 1fr; }
+  .statement { grid-template-columns: 1fr; gap: 2.5rem; }
+  .process { grid-template-columns: 1fr; gap: 2.5rem; }
+  .about { grid-template-columns: 1fr; }
+  .newsletter { grid-template-columns: 1fr; gap: 2.5rem; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .testimonial-grid { grid-template-columns: 1fr; }
+  nav .nav-links { display: none; }
+}
+
+@media (max-width: 600px) {
+  nav { padding: 1.2rem 1.5rem; }
+  .section { padding: 4rem 1.5rem; }
+  .hero-left { padding: 4rem 1.5rem 3rem; }
+  .cat-grid { grid-template-columns: 1fr; }
+  .product-grid { grid-template-columns: 1fr; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .gallery-item.tall { grid-row: span 1; }
+  .statement, .process, .about, .newsletter { padding: 4rem 1.5rem; }
+  .about-text { padding: 3rem 1.5rem; }
+  .footer-top { grid-template-columns: 1fr; }
+  footer { padding: 3rem 1.5rem 2rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <span id="preloader-logo">TUTAC</span>
+  <div id="preloader-line"></div>
+</div>
+
+<div id="progress"></div>
+
+<nav id="main-nav">
+  <a href="#" class="nav-logo">TUTAC</a>
+  <ul class="nav-links">
+    <li><a href="#categories">Kollekciók</a></li>
+    <li><a href="#products">Termékek</a></li>
+    <li><a href="#process">Rólunk</a></li>
+    <li><a href="#contact">Kapcsolat</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="#">Keresés</a>
+    <a href="#" class="nav-cart">
+      Kosár
+      <span class="nav-cart-count">2</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-top">
+      <p class="hero-season">2025 — Őszi Kollekció</p>
+      <h1 class="hero-title">
+        Csend<em>ben</em><br>
+        szól a<br>
+        divat.
+      </h1>
+      <p class="hero-desc">A TUTAC a minimalizmust nem hiányként éli meg, hanem döntésként. Minden darab megáll önmagában.</p>
+      <div class="hero-cta-wrap">
+        <a href="#products" class="btn-dark">Kollekció megtekintése</a>
+        <a href="#process" class="btn-text">Rólunk →</a>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div>
+        <span class="hero-stat-num">340+</span>
+        <span class="hero-stat-label">Termék</span>
+      </div>
+      <div>
+        <span class="hero-stat-num">12k</span>
+        <span class="hero-stat-label">Vásárló</span>
+      </div>
+      <div>
+        <span class="hero-stat-num">4</span>
+        <span class="hero-stat-label">Évad / év</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img
+      src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1000&q=85&auto=format&fit=crop"
+      alt="TUTAC 2025 őszi kollekció"
+      loading="eager"
+      onerror="this.src='https://picsum.photos/seed/tutac-hero/900/1100'">
+    <span class="hero-tag">Új kollekció — 2025</span>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span>Természetes anyagok</span><span class="marquee-dot"> · </span>
+    <span>Etikus gyártás</span><span class="marquee-dot"> · </span>
+    <span>Időtlen dizájn</span><span class="marquee-dot"> · </span>
+    <span>Magyar tervezés</span><span class="marquee-dot"> · </span>
+    <span>Slow fashion</span><span class="marquee-dot"> · </span>
+    <span>Kézműves minőség</span><span class="marquee-dot"> · </span>
+    <span>Természetes anyagok</span><span class="marquee-dot"> · </span>
+    <span>Etikus gyártás</span><span class="marquee-dot"> · </span>
+    <span>Időtlen dizájn</span><span class="marquee-dot"> · </span>
+    <span>Magyar tervezés</span><span class="marquee-dot"> · </span>
+    <span>Slow fashion</span><span class="marquee-dot"> · </span>
+    <span>Kézműves minőség</span><span class="marquee-dot"> · </span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section" id="categories">
+  <div class="cat-header reveal">
+    <h2 class="cat-title">Fedezd fel a<br><em>kollekciókat</em></h2>
+    <a href="#" class="view-all">Összes megtekintése</a>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-item reveal">
+      <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=80&auto=format&fit=crop"
+           alt="Női kollekció" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/tutac-cat1/900/600'">
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <h3 class="cat-name">Női Kollekció</h3>
+        <p class="cat-count">128 termék</p>
+      </div>
+      <a href="#" class="cat-arrow">↗</a>
+    </div>
+    <div class="cat-item reveal reveal-d1">
+      <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=600&q=80&auto=format&fit=crop"
+           alt="Férfi kollekció" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/tutac-cat2/600/800'">
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <h3 class="cat-name">Férfi</h3>
+        <p class="cat-count">94 termék</p>
+      </div>
+      <a href="#" class="cat-arrow">↗</a>
+    </div>
+    <div class="cat-item reveal reveal-d2">
+      <img src="https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=600&q=80&auto=format&fit=crop"
+           alt="Gyerek kollekció" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/tutac-cat3/600/800'">
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <h3 class="cat-name">Gyerek</h3>
+        <p class="cat-count">56 termék</p>
+      </div>
+      <a href="#" class="cat-arrow">↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATEMENT -->
+<section class="statement">
+  <h2 class="statement-title reveal">
+    Divat, ami<br>
+    <em>nem siet</em><br>
+    sehová.
+  </h2>
+  <div class="reveal reveal-d2">
+    <p style="font-size:0.92rem;line-height:1.85;color:var(--muted);max-width:48ch;margin-bottom:2rem;">
+      Minden TUTAC darabot azzal a szándékkal terveztünk, hogy évek múlva is ugyanolyan releváns legyen. Nem a szezon trendjeit követjük – az időtlenséget.
+    </p>
+    <div class="values">
+      <div class="value-item"><span>Organikus anyagok</span><span>100% természetes</span></div>
+      <div class="value-item"><span>Etikus gyártás</span><span>Fair trade tanúsított</span></div>
+      <div class="value-item"><span>Minimális csomagolás</span><span>Újrahasznosítható</span></div>
+      <div class="value-item"><span>Magyar tervezés</span><span>Budapest, 2019 óta</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="cat-header reveal">
+    <h2 class="cat-title">Kiemelt<br><em>termékek</em></h2>
+    <a href="#" class="view-all">Összes megtekintése</a>
+  </div>
+  <div class="product-grid">
+    <div class="product-card reveal">
+      <div class="product-img">
+        <span class="product-badge">Új</span>
+        <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&q=80&auto=format&fit=crop"
+             alt="Oversized Wool Coat" loading="lazy"
+             onerror="this.src='https://picsum.photos/seed/tutac-p1/600/800'">
+        <div class="product-quick">+ Kosárba</div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Oversized Wool Coat</p>
+        <div class="product-bottom">
+          <span class="product-price">€185</span>
+          <div class="colors">
+            <div class="color-dot" style="background:#C8B99A"></div>
+            <div class="color-dot" style="background:#5C4A35"></div>
+            <div class="color-dot" style="background:#2C2420"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-d1">
+      <div class="product-img">
+        <span class="product-badge sale">−30%</span>
+        <img src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=600&q=80&auto=format&fit=crop"
+             alt="Linen Blazer" loading="lazy"
+             onerror="this.src='https://picsum.photos/seed/tutac-p2/600/800'">
+        <div class="product-quick">+ Kosárba</div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Linen Blazer</p>
+        <div class="product-bottom">
+          <span class="product-price"><span class="original">€120</span>€84</span>
+          <div class="colors">
+            <div class="color-dot" style="background:#EDE5D4"></div>
+            <div class="color-dot" style="background:#8B7355"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-d2">
+      <div class="product-img">
+        <span class="product-badge">Bestseller</span>
+        <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&q=80&auto=format&fit=crop"
+             alt="Merino Knit Sweater" loading="lazy"
+             onerror="this.src='https://picsum.photos/seed/tutac-p3/600/800'">
+        <div class="product-quick">+ Kosárba</div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Merino Knit Sweater</p>
+        <div class="product-bottom">
+          <span class="product-price">€95</span>
+          <div class="colors">
+            <div class="color-dot" style="background:#D4C5A9"></div>
+            <div class="color-dot" style="background:#8B7355"></div>
+            <div class="color-dot" style="background:#3D3530"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80&auto=format&fit=crop"
+             alt="Wide Leg Trousers" loading="lazy"
+             onerror="this.src='https://picsum.photos/seed/tutac-p4/600/800'">
+        <div class="product-quick">+ Kosárba</div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Wide Leg Trousers</p>
+        <div class="product-bottom">
+          <span class="product-price">€110</span>
+          <div class="colors">
+            <div class="color-dot" style="background:#6B5D4E"></div>
+            <div class="color-dot" style="background:#EDE5D4"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-d1">
+      <div class="product-img">
+        <span class="product-badge">Új</span>
+        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80&auto=format&fit=crop"
+             alt="Silk Midi Dress" loading="lazy"
+             onerror="this.src='https://picsum.photos/seed/tutac-p5/600/800'">
+        <div class="product-quick">+ Kosárba</div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Silk Midi Dress</p>
+        <div class="product-bottom">
+          <span class="product-price">€145</span>
+          <div class="colors">
+            <div class="color-dot" style="background:#D4C5A9"></div>
+            <div class="color-dot" style="background:#2C2420"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-d2">
+      <div class="product-img">
+        <span class="product-badge sale">−20%</span>
+        <img src="https://images.unsplash.com/photo-1558171813-a3d832f69db2?w=600&q=80&auto=format&fit=crop"
+             alt="Wool Scarf" loading="lazy"
+             onerror="this.src='https://picsum.photos/seed/tutac-p6/600/800'">
+        <div class="product-quick">+ Kosárba</div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Wool Fringe Scarf</p>
+        <div class="product-bottom">
+          <span class="product-price"><span class="original">€65</span>€52</span>
+          <div class="colors">
+            <div class="color-dot" style="background:#8B7355"></div>
+            <div class="color-dot" style="background:#EDE5D4"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="section" style="padding-top:0;" id="gallery">
+  <div class="cat-header reveal">
+    <h2 class="cat-title">Galéria</h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item tall reveal">
+      <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=900&q=80&auto=format&fit=crop"
+           alt="Galéria 1" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/tutac-g1/900/640'">
+    </div>
+    <div class="gallery-item reveal reveal-d1">
+      <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80&auto=format&fit=crop"
+           alt="Galéria 2" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/tutac-g2/600/320'">
+    </div>
+    <div class="gallery-item reveal reveal-d2">
+      <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=80&auto=format&fit=crop"
+           alt="Galéria 3" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/tutac-g3/600/320'">
+    </div>
+    <div class="gallery-item reveal reveal-d1">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80&auto=format&fit=crop"
+           alt="Galéria 4" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/tutac-g4/600/320'">
+    </div>
+    <div class="gallery-item reveal reveal-d2">
+      <img src="https://images.unsplash.com/photo-1475180098004-ca77a66827be?w=600&q=80&auto=format&fit=crop"
+           alt="Galéria 5" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/tutac-g5/600/320'">
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div>
+    <p class="section-label reveal">— Folyamatunk</p>
+    <h2 class="process-heading reveal reveal-d1">
+      Gondossággal,<br>
+      elejétől<br>
+      <em>végéig.</em>
+    </h2>
+  </div>
+  <div class="process-steps">
+    <div class="process-step reveal">
+      <span class="step-num">01</span>
+      <div>
+        <p class="step-title">Tervezés & Koncepció</p>
+        <p class="step-text">Minden kollekció egy érzésből indul. Nem trendből, nem piaci igényből – hanem abból, amit el akarunk mondani.</p>
+      </div>
+    </div>
+    <div class="process-step reveal reveal-d1">
+      <span class="step-num">02</span>
+      <div>
+        <p class="step-title">Anyagválasztás</p>
+        <p class="step-text">Csak természetes, tanúsított alapanyagokkal dolgozunk. Organikus pamut, merino gyapjú, lenszövet – minden tétel nyomon követhető.</p>
+      </div>
+    </div>
+    <div class="process-step reveal reveal-d2">
+      <span class="step-num">03</span>
+      <div>
+        <p class="step-title">Etikus gyártás</p>
+        <p class="step-text">Partnereink Fair Trade tanúsított műhelyek Magyarországon és Portugáliában. Kis szériák, gondos kivitelezés.</p>
+      </div>
+    </div>
+    <div class="process-step reveal reveal-d3">
+      <span class="step-num">04</span>
+      <div>
+        <p class="step-title">Minimális csomagolás</p>
+        <p class="step-text">Minden csomag 100%-ban újrahasznosítható. A doboz maga is részévé válik a termékélménynek.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-img">
+    <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=1000&q=80&auto=format&fit=crop"
+         alt="TUTAC műhely" loading="lazy"
+         onerror="this.src='https://picsum.photos/seed/tutac-about/1000/700'">
+  </div>
+  <div class="about-text">
+    <p class="about-label reveal">— Rólunk</p>
+    <h2 class="about-title reveal reveal-d1">
+      Egy márka.<br>
+      <em>Egy ígéret.</em><br>
+      Minden darabban.
+    </h2>
+    <p class="about-body reveal reveal-d2">
+      2019-ben egy 12 négyzetméteres budapesti stúdióban kezdtük. Ma ugyanaz az elv vezet minket: kevesebb, de jobb. Nem divatot csinálunk – ruhákat, amiket érdemes megőrizni.
+    </p>
+    <div class="about-stats reveal reveal-d3">
+      <div><span class="stat-num">12k</span><span class="stat-label">Vásárló</span></div>
+      <div><span class="stat-num">340+</span><span class="stat-label">Termék</span></div>
+      <div><span class="stat-num">2019</span><span class="stat-label">Alapítva</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <p class="section-label reveal">— Vásárlóink mondják</p>
+  <div class="testimonial-grid">
+    <div class="testimonial reveal">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"A TUTAC kabát az egyetlen, amit tíz évvel ezelőtt vettem, és még mindig ugyanolyan aktuálisnak érzem. Ez az igazi befektetés."</p>
+      <p class="testimonial-author">Kovács Borbála — Budapest</p>
+    </div>
+    <div class="testimonial reveal reveal-d1">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Végre egy magyar márka, amely nem a gyors divatot követi. Az anyagminőség kiemelkedő, a fazon időtlen."</p>
+      <p class="testimonial-author">Horváth Eszter — Pécs</p>
+    </div>
+    <div class="testimonial reveal reveal-d2">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"A merino pulóver a legjobb vásárlásom volt évek óta. Puha, tartós, és minden alkalomra megfelel."</p>
+      <p class="testimonial-author">Nagy Péter — Debrecen</p>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="contact">
+  <div class="reveal">
+    <p class="section-label">— Maradj kapcsolatban</p>
+    <h2 class="newsletter-title">Új kollekció<br><em>elsőnek</em> neked.</h2>
+  </div>
+  <div class="reveal reveal-d2">
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="Email cím...">
+      <button class="newsletter-btn">Feliratkozom →</button>
+    </div>
+    <p class="newsletter-note">Csak az igazán fontos dolgoknál írunk. Havonta legfeljebb kétszer.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">TUTAC</div>
+      <p class="footer-desc">Időtlen minimalizmus. Magyar tervezés. Etikus gyártás. Budapest, 2019 óta.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Kollekciók</p>
+      <ul class="footer-links">
+        <li><a href="#">Női kollekció</a></li>
+        <li><a href="#">Férfi kollekció</a></li>
+        <li><a href="#">Gyerek</a></li>
+        <li><a href="#">Kiegészítők</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Vállalat</p>
+      <ul class="footer-links">
+        <li><a href="#">Rólunk</a></li>
+        <li><a href="#">Fenntarthatóság</a></li>
+        <li><a href="#">Karrier</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Segítség</p>
+      <ul class="footer-links">
+        <li><a href="#">Szállítás</a></li>
+        <li><a href="#">Visszáru</a></li>
+        <li><a href="#">Mérettáblázat</a></li>
+        <li><a href="#">Kapcsolat</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 TUTAC Kft. — Minden jog fenntartva</p>
+    <ul class="footer-legal">
+      <li><a href="#">ÁSZF</a></li>
+      <li><a href="#">Adatvédelem</a></li>
+      <li><a href="#">Cookie</a></li>
+    </ul>
+  </div>
+  <div class="footer-big">TUTAC</div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// SCROLL TRIGGER SMOOTH
+ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
+
+// PRELOADER
+window.addEventListener('load', () => {
+  const logo = document.getElementById('preloader-logo');
+  const line = document.getElementById('preloader-line');
+  const preloader = document.getElementById('preloader');
+
+  gsap.to(logo, { opacity: 1, duration: 0.6, ease: 'power2.out' });
+  setTimeout(() => { line.style.width = '120px'; }, 400);
+
+  gsap.to(preloader, {
+    yPercent: -100, duration: 1.2,
+    ease: 'power4.inOut', delay: 1.4,
+    onComplete: () => preloader.remove()
+  });
+
+  // Hero animáció
+  gsap.from('.hero-season', { opacity: 0, x: -20, duration: 0.8, ease: 'power3.out', delay: 1.8 });
+  gsap.from('.hero-title', { opacity: 0, y: 40, duration: 1, ease: 'power3.out', delay: 2.0 });
+  gsap.from('.hero-desc', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out', delay: 2.2 });
+  gsap.from('.hero-cta-wrap', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out', delay: 2.35 });
+  gsap.from('.hero-meta', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out', delay: 2.45 });
+  gsap.from('.hero-right', { opacity: 0, duration: 1.2, ease: 'power2.out', delay: 1.8 });
+});
+
+// SCROLL PROGRESS
+gsap.to('#progress', {
+  scaleX: 1, ease: 'none', transformOrigin: 'left center',
+  scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 0.3 }
+});
+
+// NAV
+ScrollTrigger.create({
+  start: 'top -60',
+  onUpdate: self => document.getElementById('main-nav').classList.toggle('scrolled', self.progress > 0)
+});
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// PRODUCT CARD TILT
+document.querySelectorAll('.product-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    gsap.to(card, { rotateY: x * 5, rotateX: -y * 5, duration: 0.4, ease: 'power2.out', transformPerspective: 800 });
+  });
+  card.addEventListener('mouseleave', () => {
+    gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.6, ease: 'power3.out' });
+  });
+});
+
+// HERO PARALLAX
+gsap.to('.hero-right img', {
+  y: '-12%', ease: 'none',
+  scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.5 }
+});
+</script>
+</body>
+</html>
